@@ -1,0 +1,112 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\windows\\Desktop\\BlogGithub\\riverli.blog.gateway\\RiverLi.Blog.Gateway.Api\\RiverLi.Blog.Gateway.Api.csproj": {}
+  },
+  "projects": {
+    "D:\\windows\\Desktop\\BlogGithub\\riverli.blog.gateway\\RiverLi.Blog.Gateway.Api\\RiverLi.Blog.Gateway.Api.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\windows\\Desktop\\BlogGithub\\riverli.blog.gateway\\RiverLi.Blog.Gateway.Api\\RiverLi.Blog.Gateway.Api.csproj",
+        "projectName": "RiverLi.Blog.Gateway.Api",
+        "projectPath": "D:\\windows\\Desktop\\BlogGithub\\riverli.blog.gateway\\RiverLi.Blog.Gateway.Api\\RiverLi.Blog.Gateway.Api.csproj",
+        "packagesPath": "C:\\Users\\River\\.nuget\\packages\\",
+        "outputPath": "D:\\windows\\Desktop\\BlogGithub\\riverli.blog.gateway\\RiverLi.Blog.Gateway.Api\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\River\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "D:\\windows\\Desktop\\riverli.blog.infrastructure.shared\\RiverLi.Blog.Infrastructure.Shared\\RiverLi.Blog.Infrastructure.Shared.csproj": {
+                "projectPath": "D:\\windows\\Desktop\\riverli.blog.infrastructure.shared\\RiverLi.Blog.Infrastructure.Shared\\RiverLi.Blog.Infrastructure.Shared.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.OpenApi": {
+              "target": "Package",
+              "version": "[9.0.3, )"
+            },
+            "Scalar.AspNetCore": {
+              "target": "Package",
+              "version": "[2.12.36, )"
+            },
+            "Yarp.ReverseProxy": {
+              "target": "Package",
+              "version": "[2.3.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[9.0.13, 9.0.13]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[9.0.13, 9.0.13]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[9.0.13, 9.0.13]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[9.0.13, 9.0.13]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.103/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

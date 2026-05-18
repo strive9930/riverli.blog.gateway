@@ -1,3 +1,6 @@
 # Ignore obj and bin folders
 **/obj/**
 **/bin/**
+
+# Ignore .idea folder
+.idea/

@@ -53,37 +53,33 @@ namespace RiverLi.Blog.Gateway.Api
 
             // 网关不需要 AddOpenApi(除非网关自己有接口)，直接配置 Scalar 即可
             var app = builder.Build();
-
-            // ========== 中间件顺序（非常重要！）==========
-
-            // 1. 日志中间件（最先）
+            // ========== 中间件管道顺序（请务必保持跟下方完全一致！） ==========
+            
+            // 1. 日志中间件（最先捕获所有请求）
             app.UseMiddleware<RiverRequestLoggingMiddleware>();
-
-            // 2. CORS 必须在路由和认证之前
-            app.UseCors("DefaultPolicy");
-            app.UseCors("ScalarPolicy");
-            app.UseCors("CorsPolicy");
-            // 3. HTTPS 重定向
+            
+            // 2. HTTPS 重定向
             if (!app.Environment.IsDevelopment())
             {
                 app.UseHttpsRedirection();
             }
-
-            // 4. 路由匹配
+            
+            // 3. 路由匹配（【必须放在最前面，让后续的 CORS、Auth 知道请求去哪】）
             app.UseRouting();
-
-            // 5. 认证（解析 Token，设置 User.Identity）
+            
+            // 4. 启用统一的 CORS 策略（【必须严格在 UseRouting 之后，认证与授权之前！】）
+            app.UseCors("GatewayCorsPolicy");
+            
+            // 5. 认证（解析 Token）
             app.UseAuthentication();
-
+            
             // 6. 授权（检查用户权限）
             app.UseAuthorization();
-
+            
             // 7. 端点映射
-            // 映射反向代理（只调用一次！）
             app.MapReverseProxy();
-            // 映射控制器
             app.MapControllers();
-
+            
             // 8. 开发环境特性
             if (app.Environment.IsDevelopment())
             {

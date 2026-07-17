@@ -39,6 +39,14 @@ namespace RiverLi.Blog.Gateway.Api
                         .AllowAnyHeader()
                         .AllowCredentials(); // 如果涉及 Cookie 或特定身份凭证
                 });
+                // CORS 配置
+                options.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.WithOrigins("http://192.168.16.11:30081") // 你的前端地址
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials();
+                });
             });
 
             // 3. 配置全局日志
@@ -62,6 +70,7 @@ namespace RiverLi.Blog.Gateway.Api
             // 2. CORS 必须在路由和认证之前
             app.UseCors("DefaultPolicy");
             app.UseCors("ScalarPolicy");
+            app.UseCors("CorsPolicy");
             // 3. HTTPS 重定向
             if (!app.Environment.IsDevelopment())
             {

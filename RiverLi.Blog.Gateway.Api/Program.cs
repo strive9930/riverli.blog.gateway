@@ -13,60 +13,52 @@ namespace RiverLi.Blog.Gateway.Api
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
 
-            // 1. 注册 YARP 反向代理
-            builder.Services.AddReverseProxy()
-                .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
+            // ==========================================
+            // 【关键修复：先注册 CORS 策略，再注册 YARP】
+            // ==========================================
 
-            // 2. 配置 CORS - 开发环境允许所有来源
+            // 1. 配置统一的全局 CORS 策略（必须在 AddReverseProxy 之前！）
             builder.Services.AddCors(options =>
             {
+                options.AddPolicy("GatewayCorsPolicy", policy =>
+                {
+                    policy.WithOrigins(
+                            "http://192.168.16.11:30081", // 部署环境的 Vue 前端地址
+                            "http://localhost:5002" // 本地开发环境的前端地址
+                        )
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials(); // 允许携带 Cookie/Token 凭证
+                });
+
                 options.AddPolicy("ScalarPolicy", policy =>
                 {
-                    policy.AllowAnyOrigin() // 调试阶段先用 AllowAnyOrigin
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-                });
-                options.AddPolicy("DefaultPolicy", policy =>
-                {
                     policy.AllowAnyOrigin()
-                          .AllowAnyMethod()
-                          .AllowAnyHeader();
-                });
-                options.AddPolicy("DefaultPolicy", policy =>
-                {
-                    policy.WithOrigins("http://localhost:5002") // 允许来自 Blog UI 的请求
                         .AllowAnyMethod()
-                        .AllowAnyHeader()
-                        .AllowCredentials(); // 如果涉及 Cookie 或特定身份凭证
-                });
-                // CORS 配置
-                options.AddPolicy("CorsPolicy", policy =>
-                {
-                    policy.WithOrigins("http://192.168.16.11:30081") // 你的前端地址
-                        .AllowAnyMethod()
-                        .AllowAnyHeader()
-                        .AllowCredentials();
+                        .AllowAnyHeader();
                 });
             });
 
-            // 3. 配置全局日志
+            // 2. 注册 YARP 反向代理（此时 YARP 加载配置时，就能顺利找到上面注册的 "GatewayCorsPolicy" 了！）
+            builder.Services.AddReverseProxy()
+                .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
+
+            // 3. 配置全局日志与链路追踪
             builder.AddRiverLogging();
             builder.Services.AddRiverTracing("RiverLi.Gateway");
 
-            // 4. 配置 JWT 身份验证
+            // 4. 配置 JWT 身份验证与授权
             builder.Services.AddRiverJwtAuthentication(builder.Configuration);
-            
-            // 5. 配置授权
             builder.Services.AddAuthorization();
 
             // 网关不需要 AddOpenApi(除非网关自己有接口)，直接配置 Scalar 即可
             var app = builder.Build();
-            
+
             // ========== 中间件顺序（非常重要！）==========
-            
+
             // 1. 日志中间件（最先）
             app.UseMiddleware<RiverRequestLoggingMiddleware>();
-            
+
             // 2. CORS 必须在路由和认证之前
             app.UseCors("DefaultPolicy");
             app.UseCors("ScalarPolicy");
@@ -76,22 +68,22 @@ namespace RiverLi.Blog.Gateway.Api
             {
                 app.UseHttpsRedirection();
             }
-            
+
             // 4. 路由匹配
             app.UseRouting();
-            
+
             // 5. 认证（解析 Token，设置 User.Identity）
             app.UseAuthentication();
-            
+
             // 6. 授权（检查用户权限）
             app.UseAuthorization();
-            
+
             // 7. 端点映射
             // 映射反向代理（只调用一次！）
             app.MapReverseProxy();
             // 映射控制器
             app.MapControllers();
-            
+
             // 8. 开发环境特性
             if (app.Environment.IsDevelopment())
             {
